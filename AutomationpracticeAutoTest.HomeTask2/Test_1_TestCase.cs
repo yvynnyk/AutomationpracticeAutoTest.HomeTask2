@@ -4,6 +4,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
+using System.IO;
 
 namespace AutomationpracticeAutoTest.HomeTask2.Test1
 {
@@ -11,14 +12,14 @@ namespace AutomationpracticeAutoTest.HomeTask2.Test1
     public class Test_1_TestCase
     {
         IWebDriver driver;
-        string testURL = "http://automationpractice.com/index.php";
-        string errorMessageText = "There is 1 error";
-        string errorDescriptionText = "Invalid email address.";
+        readonly string testURL = "http://automationpractice.com/index.php";
+        readonly string errorMessageText = "There is 1 error";
+        readonly string errorDescriptionText = "Invalid email address.";
 
         [OneTimeSetUp]
         public void Setup()
         {
-            driver = new ChromeDriver();
+            driver = new ChromeDriver(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
             driver.Manage().Window.Maximize();
         }
         
@@ -32,15 +33,30 @@ namespace AutomationpracticeAutoTest.HomeTask2.Test1
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
 
             IWebElement buttonSignin = driver.FindElement(By.ClassName("login"));
+            //other options:
+            //XPath = "//nav//div//a[@rel='nofollow']"
+            //CssSelector = "a[title='Log in to your customer account']"
             buttonSignin.Click();
 
-            IWebElement emailAddress = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("email")));
+            wait.Until(ExpectedConditions.ElementIsVisible(By.Id("login_form")));
+            //other options:
+            //XPath = "//h3[text()='Already registered?']//parent::form"
+            //Csslocator = "form[id=login_form]"
+
+            IWebElement emailAddress = driver.FindElement(By.Id("email"));
+            //other options:
+            //XPath = "label[@for='email']//following-sibling::input"
+            //Csslocator = "#email"
             emailAddress.SendKeys(userName);
 
-            IWebElement password = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("passwd")));
+            IWebElement password = driver.FindElement(By.Id("passwd"));
+            //other options:
+            //XPath = "//label[@for='passwd']//following-sibling::span//input"
+            //Csslocator = "input[type='password']"
+
             password.SendKeys(userPassword);
 
-            IWebElement buttonSigninSubmit = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("SubmitLogin")));
+            IWebElement buttonSigninSubmit = driver.FindElement(By.Name("SubmitLogin"));
             buttonSigninSubmit.Click();
 
             DefaultWait<IWebDriver> fluentWait = new DefaultWait<IWebDriver>(driver);
@@ -49,8 +65,10 @@ namespace AutomationpracticeAutoTest.HomeTask2.Test1
             fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException));
             fluentWait.Message = "Element is not found";
 
-            IWebElement errorMessage = fluentWait.Until(drv => drv.FindElement(By.CssSelector("div.alert.alert-danger > p")));
-            IWebElement errorDescription = fluentWait.Until(drv => drv.FindElement(By.CssSelector("div.alert.alert-danger > ol > li")));
+            fluentWait.Until(drv => drv.FindElement(By.CssSelector("div[id=center_column] > div.alert.alert-danger")));
+
+            IWebElement errorMessage = driver.FindElement(By.CssSelector("div.alert.alert-danger > p"));
+            IWebElement errorDescription = driver.FindElement(By.CssSelector("div.alert.alert-danger > ol > li"));
 
             Assert.Multiple(() =>
             {
