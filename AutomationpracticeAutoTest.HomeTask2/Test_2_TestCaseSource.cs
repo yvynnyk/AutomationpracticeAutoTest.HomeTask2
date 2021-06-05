@@ -42,25 +42,27 @@ namespace AutomationpracticeAutoTest.HomeTask2.Test2
 
             IWebElement buttonSignin = driver.FindElement(By.ClassName("login"));
             //other options:
-                //XPath = "//nav//div//a[@rel='nofollow']"
-                //CssSelector = "a[title='Log in to your customer account']"
+            buttonSignin = driver.FindElement(By.XPath("//nav//div//a[@rel='nofollow']"));
+            buttonSignin = driver.FindElement(By.CssSelector("a[title='Log in to your customer account']"));
+            
             buttonSignin.Click();
 
             wait.Until(ExpectedConditions.ElementIsVisible(By.Id("login_form")));
             //other options:
-                //XPath = "//h3[text()='Already registered?']//parent::form"
-                //Csslocator = "form[id=login_form]"
-            
+            wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//h3[text()='Already registered?']//parent::form")));
+            wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("form[id=login_form]")));
+  
             IWebElement emailAddress = driver.FindElement(By.Id("email"));
             //other options:
-                //XPath = "label[@for='email']//following-sibling::input"
-                //Csslocator = "#email"
+            emailAddress = driver.FindElement(By.XPath("//label[@for='email']//following-sibling::input"));
+            emailAddress = driver.FindElement(By.CssSelector("#email"));
+
             emailAddress.SendKeys(userName);
 
             IWebElement password = driver.FindElement(By.Id("passwd"));
             //other options:
-                //XPath = "//label[@for='passwd']//following-sibling::span//input"
-                //Csslocator = "input[type='password']"
+            password = driver.FindElement(By.XPath("//label[@for='passwd']//following-sibling::span//input"));
+            password = driver.FindElement(By.CssSelector("input[type='password']"));
 
             password.SendKeys(userPassword);
 
